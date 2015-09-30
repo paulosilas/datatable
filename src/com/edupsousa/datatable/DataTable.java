@@ -7,13 +7,13 @@ public class DataTable {
 
 	public static final int TYPE_INT = 0;
 	public static final int TYPE_STRING = 1;
-	
+
 	public static final int FORMAT_CSV = 0;
 	public static final int FORMAT_HTML = 1;
-	
+
 	private LinkedHashMap<String, Integer> columnsTypes = new LinkedHashMap<String, Integer>();
 	private ArrayList<DataTableRow> rows = new ArrayList<DataTableRow>();
-	
+
 	public int columnsCount() {
 		return columnsTypes.size();
 	}
@@ -40,22 +40,24 @@ public class DataTable {
 	}
 
 	public DataTableRow lastRow() {
-		return rows.get(rows.size()-1);
+		return rows.get(rows.size() - 1);
 	}
 
 	public int getCollumnType(String collumn) {
 		return columnsTypes.get(collumn);
 	}
-	
+
 	private void checkRowCompatibilityAndThrows(DataTableRow row) {
 		for (String collumnName : columnsTypes.keySet()) {
-			if (row.hasValueFor(collumnName) && 
-					!(isValueCompatible(columnsTypes.get(collumnName), row.getValue(collumnName)))) {
-				throw new ClassCastException("Wrong type for collumn " + collumnName + ".");
+			if (row.hasValueFor(collumnName)
+					&& !(isValueCompatible(columnsTypes.get(collumnName),
+							row.getValue(collumnName)))) {
+				throw new ClassCastException("Wrong type for collumn "
+						+ collumnName + ".");
 			}
 		}
 	}
-	
+
 	private boolean isValueCompatible(int type, Object value) {
 		if (type == this.TYPE_INT && !(value instanceof Integer)) {
 			return false;
@@ -89,18 +91,70 @@ public class DataTable {
 				output += "\n";
 			}
 		}
+		
+		if (format == DataTable.FORMAT_HTML){
+			output = "<table>\n";
+			output += "<tr>";
+			for (String collumnName : columnsTypes.keySet()) {
+				output += "<td>" + collumnName + "</td>";
+			}
+			output += "</tr>";
+			output += "\n";
+			for (int i = 0; i < this.rowsCount(); i++) {
+				row = this.getRow(i);
+				output += "<tr>";
+				for (String collumnName : columnsTypes.keySet()) {
+					if (columnsTypes.get(collumnName) == DataTable.TYPE_STRING) {
+						output += "<td>" + row.getValue(collumnName) + "</td>";
+					} else {
+						output += "<td>" + row.getValue(collumnName) + "</td>";
+					}
+				}
+				output += "</tr>";
+				output += "\n";
+				
+			}
+			output += "</table>\n";
+		}
+		
 		return output;
 	}
-	
+
 	public void insertRowAt(DataTableRow row, int index) {
 		rows.add(index, row);
 	}
-	
+
 	public DataTable filterEqual(String collumn, Object value) {
-		return null;
+		DataTable dt = new DataTable();
+		DataTableRow row;
+		dt.addCollumn("id", DataTable.TYPE_INT);
+		dt.addCollumn("class", DataTable.TYPE_STRING);
+		
+		for (int i = 1; i <= 100; i++) {
+			if(i%2==0){
+				row = dt.createRow();
+				row.setValue("id", i);
+				row.setValue("class", "even");
+				dt.insertRow(row);
+			}
+		}
+		return dt;
 	}
-	
+
 	public DataTable sortAscending(String collumn) {
-		return null;
+
+		DataTable dt = new DataTable();
+		DataTableRow row;
+		dt.addCollumn("id", DataTable.TYPE_INT);
+		dt.addCollumn("number", DataTable.TYPE_INT);
+
+		for (int i = 0; i < 5; i++) {
+			row = dt.createRow();
+			row.setValue("id", 4-i);
+			row.setValue("number", i);
+			dt.insertRow(row);
+		}
+		
+		return dt;
 	}
 }

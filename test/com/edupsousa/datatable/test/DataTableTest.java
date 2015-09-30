@@ -147,13 +147,16 @@ public class DataTableTest {
 			assertEquals((i+1)*2, row.getValue("id"));
 			assertEquals("even", row.getValue("class"));
 		}
+
 	}
+	
 	
 	@Test
 	public void sortRowsAscending() {
 		DataTableRow row;
 		dt.addCollumn("id", DataTable.TYPE_INT);
 		dt.addCollumn("number", DataTable.TYPE_INT);
+		
 		
 		for (int i = 0; i < 5; i++) {
 			row = dt.createRow();
@@ -168,6 +171,7 @@ public class DataTableTest {
 			assertEquals(4-i, row.getValue("id"));
 			assertEquals(i, row.getValue("number"));						
 		}
+		
 	}
 	
 	@Test
